@@ -6,9 +6,10 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, default: 'customer' },
   phone: String,
   location: {
-    type: { type: String, enum: ['Point'], default: 'Point' },
-    coordinates: [Number]
-  },
+  type: "Point",
+  coordinates: [req.body.longitude, req.body.latitude]
+},
+  
   serviceType: String,
   idProof: String,
   status: { type: String, default: 'pending' }, // 'pending', 'approved', 'rejected'
