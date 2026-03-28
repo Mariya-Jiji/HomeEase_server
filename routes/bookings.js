@@ -85,8 +85,9 @@ router.put('/:id/payment', auth, async (req, res) => {
     }
     
     // Only allow payment for completed bookings
+    console.log('Payment attempt - current status:', booking.status);
     if (booking.status !== 'completed') {
-      return res.status(400).json({ msg: 'Booking must be completed before initiating payment.' });
+      return res.status(400).json({ msg: `Payment only allowed for 'completed' status. Current: ${booking.status}` });
     }
     
     // Update with payment method - sets paymentInitiated flag
