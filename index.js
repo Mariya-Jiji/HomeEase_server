@@ -22,8 +22,19 @@ app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/admin', require('./routes/admin'));
 
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://client-pearl-nine.vercel.app"
+];
+
 app.use(cors({
-  origin: "https://your-frontend.vercel.app",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
   credentials: true
 }));
 const complaintsRoutes = require('./routes/complaints');
