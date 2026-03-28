@@ -84,11 +84,7 @@ router.put('/:id/payment', auth, async (req, res) => {
       return res.status(403).json({ msg: 'Only the customer can initiate payment.' });
     }
     
-    // Only allow payment for completed bookings
-    console.log('Payment attempt - current status:', booking.status);
-    if (booking.status !== 'completed') {
-      return res.status(400).json({ msg: `Payment only allowed for 'completed' status. Current: ${booking.status}` });
-    }
+    
     
     // Update with payment method - sets paymentInitiated flag
     const updatedBooking = await Booking.findByIdAndUpdate(
