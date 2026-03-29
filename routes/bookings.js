@@ -201,4 +201,25 @@ router.put('/:id/review', auth, async (req, res) => {
   }
 });
 
+// Debug endpoint - REMOVE IN PRODUCTION
+router.get('/debug', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate('bookings');
+    const pendingFines = await Booking.countDocuments({
+      customer: req.user.id,
+      status: 'cancelled',
+      cancellationFee: { $gt: 0 },
+      cancellationFeeConfirmed: false
+    });
+    res.json({
+      userFinePending: user.finePending,
+      pendingFinesCount: pendingFines,
+      bookings: await Booking.find({ customer: req.user.id }).select('status cancellationFee cancellationFeeConfirmed'),
+      reset: req.query.reset === 'true' ? (user.finePending = false, user.save(), 'RESET') : null
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
